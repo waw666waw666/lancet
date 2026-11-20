@@ -968,3 +968,37 @@ func TestGetZeroHourAndNightTimestampLocalZone(t *testing.T) {
 		assert.Equal(int64(86399), night-zero)
 	}
 }
+
+func TestAddDayAcrossDST(t *testing.T) {
+	t.Parallel()
+	assert := internal.NewAssert(t, "TestAddDayAcrossDST")
+
+	loc, err := time.LoadLocation("America/Los_Angeles")
+	assert.Equal(true, err == nil)
+
+	// Spring forward 2024-03-10: +24h shifts local clock by one hour.
+	start := time.Date(2024, 3, 10, 0, 0, 0, 0, loc)
+	got := AddDay(start, 1)
+	want := time.Date(2024, 3, 11, 0, 0, 0, 0, loc)
+	assert.Equal(want, got)
+
+	noon := time.Date(2024, 3, 9, 12, 0, 0, 0, loc)
+	assert.Equal(time.Date(2024, 3, 10, 12, 0, 0, 0, loc), AddDay(noon, 1))
+
+	// Fall back 2024-11-03: +24h lands an hour early.
+	fall := time.Date(2024, 11, 3, 0, 0, 0, 0, loc)
+	assert.Equal(time.Date(2024, 11, 4, 0, 0, 0, 0, loc), AddDay(fall, 1))
+}
+
+func TestAddWeekAcrossDST(t *testing.T) {
+	t.Parallel()
+	assert := internal.NewAssert(t, "TestAddWeekAcrossDST")
+
+	loc, err := time.LoadLocation("America/Los_Angeles")
+	assert.Equal(true, err == nil)
+
+	start := time.Date(2024, 3, 9, 0, 0, 0, 0, loc)
+	got := AddWeek(start, 1)
+	want := time.Date(2024, 3, 16, 0, 0, 0, 0, loc)
+	assert.Equal(want, got)
+}

@@ -76,16 +76,16 @@ func AddHour(t time.Time, hours int64) time.Time {
 	return t.Add(time.Hour * time.Duration(hours))
 }
 
-// AddDay add or sub days to the time.
+// AddDay add or sub calendar days to the time.
 // Play: https://go.dev/play/p/dIGbs_uTdFa
 func AddDay(t time.Time, days int64) time.Time {
-	return t.Add(24 * time.Hour * time.Duration(days))
+	return t.AddDate(0, 0, int(days))
 }
 
-// AddWeek add or sub weeks to the time.
+// AddWeek add or sub calendar weeks to the time.
 // play: https://go.dev/play/p/M9TqdMiaA2p
 func AddWeek(t time.Time, weeks int64) time.Time {
-	return t.Add(7 * 24 * time.Hour * time.Duration(weeks))
+	return t.AddDate(0, 0, int(weeks)*7)
 }
 
 // AddMonth add or sub months to the time.
